@@ -191,9 +191,15 @@ function MatchCard({ match: m }: { match: JobMatch }) {
             {m.fit_score == null && (m.description?.length ?? 0) < 40 && (
               <span className="text-xs text-stone-500">No description came through for this one. Open the posting, then paste its description on the right to score it.</span>
             )}
-            {m.fit_score == null && profile && (m.description?.length ?? 0) >= 40 && (
-              <Button variant="secondary" className="px-3 py-1.5 text-xs" disabled={rescore.isPending} onClick={() => rescore.mutate({ profile: profileForApi(profile), match: m })}>
-                {rescore.isPending ? "Scoring…" : "Score"}
+            {profile && (m.description?.length ?? 0) >= 40 && (
+              <Button
+                variant={m.fit_score == null ? "secondary" : "ghost"}
+                className="px-3 py-1.5 text-xs"
+                disabled={rescore.isPending}
+                title={m.fit_score == null ? undefined : "Score again with your current preferences"}
+                onClick={() => rescore.mutate({ profile: profileForApi(profile), match: m })}
+              >
+                {rescore.isPending ? "Scoring…" : m.fit_score == null ? "Score" : "Rescore"}
               </Button>
             )}
             {m.url && (

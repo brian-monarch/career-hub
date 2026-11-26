@@ -58,6 +58,18 @@ export const FitSchema = z.object({
     domain: z.enum(["core", "adjacent", "outside"]),
   }),
   deal_breakers_hit: z.array(z.string()).describe("Any of his deal breakers this posting triggers. Empty if none."),
+  score_drivers: z
+    .array(
+      z.object({
+        factor: z.enum(["level", "comp", "location", "domain", "company", "role_scope", "requirements", "past_dismissals"]),
+        effect: z.enum(["raised", "lowered", "neutral"]),
+        reason: z.string().describe("One plain sentence: what in the posting, compared with which of his preferences, moved the score."),
+      }),
+    )
+    .describe("Why the score landed where it did, one entry per factor that mattered, biggest effect first. Cover level, comp, location, domain and company at minimum."),
+  preference_tips: z
+    .array(z.string())
+    .describe("0-2 concrete suggestions for his Preferences if this score shows his settings may not say what he means, e.g. 'If roles like this interest you, add this industry to Domains.' Empty when the settings worked."),
 });
 export type Fit = z.infer<typeof FitSchema>;
 
