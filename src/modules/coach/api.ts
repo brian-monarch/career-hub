@@ -1,17 +1,8 @@
 import { supabase } from "@/platform/data/supabase";
+import { callApi } from "@/platform/data/api";
 import type { CoachRequest, CoachResponse } from "@shared/coach";
 
-export async function requestFeedback(body: CoachRequest): Promise<CoachResponse> {
-  const { data } = await supabase.auth.getSession();
-  const res = await fetch("/api/coach", {
-    method: "POST",
-    headers: { "content-type": "application/json", authorization: `Bearer ${data.session?.access_token ?? ""}` },
-    body: JSON.stringify(body),
-  });
-  const payload = await res.json().catch(() => ({ error: `Coach request failed (${res.status}).` }));
-  if (!res.ok) throw new Error(payload.error ?? `Coach request failed (${res.status}).`);
-  return payload as CoachResponse;
-}
+export const requestFeedback = (body: CoachRequest) => callApi<CoachResponse>("/api/coach", body);
 
 /** Persist a scored take. Session row is created lazily on the first take. */
 export async function saveTake(args: {

@@ -1,6 +1,6 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { betaZodOutputFormat } from "@anthropic-ai/sdk/helpers/beta/zod";
-import { createClient } from "@supabase/supabase-js";
+import { claudeErrorResponse, json, requireUser } from "../server/http.js";
 import {
   CoachRequestSchema,
   FeedbackSchema,
@@ -27,6 +27,10 @@ Known habits to hunt for in this candidate:
 - Says "we" when the decision was his own, which hides his judgement. Flag every instance where the context shows he made the call.
 - Describes the work and the system but stops before the business outcome or the number.
 - Undersells his point of view: the answer should state what he believed and why, early.
+- Under pressure he loses recall of what he has actually done and pitches it at the wrong level (too in-the-weeds, or too vague). Skeptical executives and deep technical peers make this worse. Help him find a short, repeatable way in.
+- Rambles when unsure; the fix is a one-line headline answer first, then the story.
+
+Tone: blunt first (score and the main problem), then the reflection questions to help him think it through, then practical tips. Never pad with praise; never be discouraging about him as a candidate.
 
 Rules:
 - Never invent facts, numbers, names or outcomes. When a number is missing, write [number] in the rewrite and name it in missing_proof.
@@ -63,27 +67,9 @@ function buildPrompt(req: CoachRequest): string {
   return parts.join("\n\n");
 }
 
-const json = (status: number, body: unknown) =>
-  new Response(JSON.stringify(body), { status, headers: { "content-type": "application/json" } });
-
 export async function POST(request: Request): Promise<Response> {
-  const supabaseUrl = process.env.SUPABASE_URL ?? process.env.VITE_SUPABASE_URL;
-  const supabaseKey = process.env.SUPABASE_ANON_KEY ?? process.env.VITE_SUPABASE_ANON_KEY;
-  if (!supabaseUrl || !supabaseKey) return json(500, { error: "Supabase env vars are not set on this deploy." });
-  if (!process.env.ANTHROPIC_API_KEY) return json(500, { error: "ANTHROPIC_API_KEY is not set on this deploy." });
-
-  // Only a signed-in user (and, if ALLOWED_EMAILS is set, only those emails) can spend API credits.
-  const token = request.headers.get("authorization")?.replace(/^Bearer\s+/i, "");
-  if (!token) return json(401, { error: "Not signed in." });
-  const { data: userData, error: authError } = await createClient(supabaseUrl, supabaseKey).auth.getUser(token);
-  if (authError || !userData.user) return json(401, { error: "Session expired. Sign in again." });
-  const allowed = (process.env.ALLOWED_EMAILS ?? "")
-    .split(",")
-    .map((e) => e.trim().toLowerCase())
-    .filter(Boolean);
-  if (allowed.length && !allowed.includes((userData.user.email ?? "").toLowerCase())) {
-    return json(403, { error: "This account is not allowed to use the coach." });
-  }
+  const user = await requireUser(request, { needsClaude: true });
+  if (user instanceof Response) return user;
 
   const parsed = CoachRequestSchema.safeParse(await request.json().catch(() => null));
   if (!parsed.success) return json(400, { error: "Bad request", issues: parsed.error.issues });
@@ -115,9 +101,6 @@ export async function POST(request: Request): Promise<Response> {
     };
     return json(200, body);
   } catch (err) {
-    if (err instanceof Anthropic.RateLimitError) return json(429, { error: "Rate limited by the Claude API. Wait a minute and retry." });
-    if (err instanceof Anthropic.AuthenticationError) return json(500, { error: "ANTHROPIC_API_KEY is invalid." });
-    if (err instanceof Anthropic.APIError) return json(502, { error: `Claude API error (${err.status ?? "network"}).` });
-    throw err;
+    return claudeErrorResponse(err);
   }
 }

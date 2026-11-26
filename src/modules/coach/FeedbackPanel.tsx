@@ -71,6 +71,28 @@ export function FeedbackPanel({ result, onProbe }: { result: CoachResponse; onPr
         </Card>
       )}
 
+      {(f.reflection?.length ?? 0) > 0 && (
+        <Card>
+          <p className="eyebrow">Think it through</p>
+          <ul className="mt-2 space-y-1.5 text-sm text-stone-200">
+            {f.reflection.map((q, i) => (
+              <li key={i}>{q}</li>
+            ))}
+          </ul>
+        </Card>
+      )}
+
+      {(f.approach_tips?.length ?? 0) > 0 && (
+        <Card>
+          <p className="eyebrow">Next time</p>
+          <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-stone-300 marker:text-brass-300">
+            {f.approach_tips.map((t, i) => (
+              <li key={i}>{t}</li>
+            ))}
+          </ul>
+        </Card>
+      )}
+
       <Card>
         <button className="eyebrow cursor-pointer hover:text-stone-200" onClick={() => setShowRewrite((v) => !v)}>
           {showRewrite ? "−" : "+"} Tighter version

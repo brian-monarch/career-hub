@@ -2,7 +2,11 @@ import type { ReactNode } from "react";
 import { CoachPage } from "@/modules/coach/CoachPage";
 import { ProgressPage } from "@/modules/coach/ProgressPage";
 import { StoriesPage } from "@/modules/stories/StoriesPage";
-import { ComingSoon } from "@/modules/pipeline/ComingSoon";
+import { ComingSoon } from "@/platform/ui/ComingSoon";
+import { DiscoverPage } from "@/modules/search/DiscoverPage";
+import { PipelinePage } from "@/modules/search/PipelinePage";
+import { WatchlistPage } from "@/modules/search/WatchlistPage";
+import { PreferencesPage } from "@/modules/search/PreferencesPage";
 
 /**
  * Each job to be done is a module with its own folder under src/modules.
@@ -12,34 +16,26 @@ import { ComingSoon } from "@/modules/pipeline/ComingSoon";
 export type HubModule = {
   path: string;
   label: string;
-  group: "Prepare" | "Search";
+  group: "Search" | "Apply" | "Prepare";
   status: "live" | "soon";
   element: ReactNode;
 };
 
+export const HOME_PATH = "/discover";
+
 export const modules: HubModule[] = [
+  { path: "/discover", label: "Discover", group: "Search", status: "live", element: <DiscoverPage /> },
+  { path: "/pipeline", label: "Pipeline", group: "Search", status: "live", element: <PipelinePage /> },
+  { path: "/watchlist", label: "Watchlist", group: "Search", status: "live", element: <WatchlistPage /> },
+  { path: "/preferences", label: "Preferences", group: "Search", status: "live", element: <PreferencesPage /> },
+  {
+    path: "/applications",
+    label: "Tailor resume",
+    group: "Apply",
+    status: "soon",
+    element: <ComingSoon eyebrow="Apply" title="Tailor resume and cover letter" note="Pick a role in your pipeline and get a resume and cover letter tuned to it." />,
+  },
   { path: "/coach", label: "Mock interview", group: "Prepare", status: "live", element: <CoachPage /> },
   { path: "/stories", label: "Story bank", group: "Prepare", status: "live", element: <StoriesPage /> },
   { path: "/progress", label: "Progress", group: "Prepare", status: "live", element: <ProgressPage /> },
-  {
-    path: "/pipeline",
-    label: "Pipeline",
-    group: "Search",
-    status: "soon",
-    element: <ComingSoon title="Pipeline" note="Kanban of every role by stage, with time-in-stage. Planned for mid-January." />,
-  },
-  {
-    path: "/contacts",
-    label: "Contacts",
-    group: "Search",
-    status: "soon",
-    element: <ComingSoon title="Contacts" note="People, warmth, last touch, and the next follow-up for each." />,
-  },
-  {
-    path: "/discover",
-    label: "Discover",
-    group: "Search",
-    status: "soon",
-    element: <ComingSoon title="Discover" note="Saved searches and fit-scored matches from target companies' job boards." />,
-  },
 ];

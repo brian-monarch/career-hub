@@ -80,6 +80,12 @@ export const FeedbackSchema = z.object({
   story_fit: z.string().describe("Whether the chosen story fits this question; if a different hero story would land better, say which and why."),
   rewrite: z.string().describe("A tighter version of the answer in the candidate's voice, 200-350 words, point first, with the decision named in 'I' form. Do not invent facts or numbers: write [number] where one is missing."),
   probe: z.string().describe("The follow-up question this interviewer would ask next, digging at the weakest point."),
+  reflection: z
+    .array(z.string())
+    .describe("2-3 short questions that help him see why this answer came out the way it did and recall what he actually did (e.g. 'What was the one decision only you could make here?')."),
+  approach_tips: z
+    .array(z.string())
+    .describe("2-3 concrete tips for approaching this type of question next time: an opening line pattern, what to lead with, how to pitch it at Director level."),
 });
 
 export type CoachFeedback = z.infer<typeof FeedbackSchema>;

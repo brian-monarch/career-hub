@@ -1,6 +1,6 @@
 # Career Hub
 
-A private web app for running a Director of Product search end to end: an AI mock-interview coach, a story bank, and (next) a personal CRM and pipeline.
+A private web app for running a Director of Product search end to end: a job finder that scans target companies' job boards and scores each role against your preferences, a pipeline board, and an AI mock-interview coach. Next: resume and cover-letter tailoring.
 
 **Stack:** React 19, Vite, TypeScript, Tailwind CSS v4, Supabase (Postgres, Auth, row-level security), Vercel (hosting and serverless functions), Claude API.
 
@@ -10,12 +10,15 @@ A private web app for running a Director of Product search end to end: an AI moc
 src/
   platform/        shared by every module: auth, Supabase client and queries, design system
   modules/
-    coach/         mock interview, rubric feedback, progress     (live)
-    stories/       hero-story bank in STAR form                  (live)
-    pipeline/      CRM, Kanban, contacts, discovery              (next)
+    search/        discover (scan + paste + fit score), pipeline Kanban, watchlist, preferences
+    coach/         mock interview, rubric feedback, progress
+    stories/       hero-story bank in STAR form
   modules/registry.tsx   one entry per module; drives nav and routes
-shared/coach.ts    rubric, personas and response schema used by both the browser and the API
-api/coach.ts       Vercel function: verifies the Supabase session, calls Claude, returns structured feedback
+shared/            schemas shared by the browser and the API (coach rubric, fit score, job-board detection)
+server/            server-only helpers: session check, job-board adapters (Greenhouse, Lever, Ashby, Workday)
+api/coach.ts       scores an interview answer with Claude
+api/jobs-scan.ts   pulls product-leadership roles from watchlist companies' public job boards
+api/jobs-score.ts  extracts a posting's details and scores fit 1-10 against your search preferences
 supabase/migrations/   SQL schema (all v1 tables, RLS on every table)
 ```
 
@@ -32,7 +35,7 @@ Each job to be done is its own module sharing one login, one database and one de
 ## Setup
 
 ### 1. Database
-Supabase dashboard > SQL Editor > New query: paste `supabase/migrations/20261126000000_init.sql` and Run.
+Supabase dashboard > SQL Editor > New query: paste each file in `supabase/migrations/` in name order and Run.
 
 ### 2. Auth
 Supabase > Authentication > URL Configuration:

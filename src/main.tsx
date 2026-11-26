@@ -7,7 +7,7 @@ import { AuthProvider, useAuth } from "@/platform/auth/AuthProvider";
 import { LoginPage, SetupNeeded } from "@/platform/auth/LoginPage";
 import { supabaseConfigured } from "@/platform/data/supabase";
 import { AppShell } from "@/platform/ui/AppShell";
-import { modules } from "@/modules/registry";
+import { HOME_PATH, modules } from "@/modules/registry";
 
 const queryClient = new QueryClient({ defaultOptions: { queries: { staleTime: 30_000, retry: 1 } } });
 
@@ -19,11 +19,11 @@ function App() {
   return (
     <Routes>
       <Route element={<AppShell />}>
-        <Route index element={<Navigate to="/coach" replace />} />
+        <Route index element={<Navigate to={HOME_PATH} replace />} />
         {modules.map((m) => (
           <Route key={m.path} path={m.path} element={m.element} />
         ))}
-        <Route path="*" element={<Navigate to="/coach" replace />} />
+        <Route path="*" element={<Navigate to={HOME_PATH} replace />} />
       </Route>
     </Routes>
   );
