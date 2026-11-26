@@ -7,8 +7,8 @@ import { EMPTY_PROFILE, useProfile, useSaveProfile } from "./data";
 const LIST_FIELDS: { key: "target_titles" | "target_levels" | "domains" | "locations"; label: string; placeholder: string }[] = [
   { key: "target_titles", label: "Target titles", placeholder: "Director of Product, Head of Product, Senior Director Product Management" },
   { key: "target_levels", label: "Levels", placeholder: "Director, Senior Director" },
-  { key: "domains", label: "Preferred domains", placeholder: "Retail media, measurement, data platforms, retail tech" },
-  { key: "locations", label: "Locations", placeholder: "Minneapolis-St. Paul, Remote (US)" },
+  { key: "domains", label: "Preferred domains", placeholder: "e.g. Data platforms, marketplaces, fintech" },
+  { key: "locations", label: "Locations", placeholder: "e.g. Chicago, Remote (US)" },
 ];
 
 const toList = (s: string) =>
@@ -100,11 +100,11 @@ export function PreferencesPage() {
           <div className="grid gap-5 md:grid-cols-4">
             <div>
               <Label htmlFor="ideal">Total comp, ideal role</Label>
-              <input id="ideal" className="field font-mono text-sm" placeholder="250k" value={form.comp_floor_ideal ?? ""} onChange={(e) => set("comp_floor_ideal", e.target.value)} />
+              <input id="ideal" className="field font-mono text-sm" placeholder="e.g. 200k" value={form.comp_floor_ideal ?? ""} onChange={(e) => set("comp_floor_ideal", e.target.value)} />
             </div>
             <div>
               <Label htmlFor="good">Total comp, good role</Label>
-              <input id="good" className="field font-mono text-sm" placeholder="270k" value={form.comp_floor_good ?? ""} onChange={(e) => set("comp_floor_good", e.target.value)} />
+              <input id="good" className="field font-mono text-sm" placeholder="e.g. 220k" value={form.comp_floor_good ?? ""} onChange={(e) => set("comp_floor_good", e.target.value)} />
             </div>
             <div>
               <Label htmlFor="travel">Max travel %</Label>
@@ -122,12 +122,12 @@ export function PreferencesPage() {
             </div>
             <div>
               <Label htmlFor="deal">Deal breakers</Label>
-              <textarea id="deal" className="field text-sm" rows={3} placeholder="Relocation; on-site 5 days outside the Twin Cities; IC-only roles" value={form.deal_breakers ?? ""} onChange={(e) => set("deal_breakers", e.target.value)} />
+              <textarea id="deal" className="field text-sm" rows={3} placeholder="e.g. Relocation; fully on-site; IC-only roles" value={form.deal_breakers ?? ""} onChange={(e) => set("deal_breakers", e.target.value)} />
             </div>
           </div>
           <div>
             <Label htmlFor="boosts">Boosts: what makes a company worth a look outside your domains</Label>
-            <textarea id="boosts" className="field text-sm" rows={2} placeholder="Well respected and high performing; Twin Cities based; tech-oriented; sports, golf or travel" value={form.boosts ?? ""} onChange={(e) => set("boosts", e.target.value)} />
+            <textarea id="boosts" className="field text-sm" rows={2} placeholder="e.g. Well respected; local; tech-oriented; an industry you care about" value={form.boosts ?? ""} onChange={(e) => set("boosts", e.target.value)} />
           </div>
           {save.error && <p className="text-sm text-terracotta-300">{(save.error as Error).message}</p>}
           <div className="flex items-center gap-3">

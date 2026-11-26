@@ -49,7 +49,7 @@ export function WatchlistPage() {
         <Card className="h-fit">
           <form onSubmit={addBulk} className="space-y-3">
             <Label htmlFor="bulk">Add companies (one per line)</Label>
-            <textarea id="bulk" className="field text-sm" rows={8} placeholder={"Best Buy\nGeneral Mills\nInstacart"} value={bulk} onChange={(e) => setBulk(e.target.value)} />
+            <textarea id="bulk" className="field text-sm" rows={8} placeholder={"Acme Corp\nExample Labs\nSample Co"} value={bulk} onChange={(e) => setBulk(e.target.value)} />
             <Button type="submit" className="w-full" disabled={!bulk.trim() || save.isPending}>Add to watchlist</Button>
           </form>
         </Card>

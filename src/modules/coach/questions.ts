@@ -15,7 +15,7 @@ export const QUESTION_LIBRARY: LibraryQuestion[] = [
   { category: "leadership", text: "How do you decide what your team will not do this quarter?" },
   { category: "strategy", text: "How would you build a product strategy for a platform with many internal and external customers?" },
   { category: "strategy", text: "Tell me about a time you made the case for an investment. How did you get it funded?" },
-  { category: "strategy", text: "Where do you see retail media going in the next three years, and what would you build for it?" },
+  { category: "strategy", text: "Where do you see this company's market going in the next three years, and what would you build for it?" },
   { category: "strategy", text: "How do you balance platform investments against features customers are asking for today?" },
   { category: "product_sense", text: "Pick a data or analytics product you use. What would you change and why?" },
   { category: "product_sense", text: "How would you design a self-serve reporting experience for advertisers?" },

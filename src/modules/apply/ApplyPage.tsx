@@ -112,7 +112,7 @@ export function ApplyPage() {
             )}
             <div className="mt-4">
               <Label htmlFor="instr">Anything to emphasize (optional)</Label>
-              <textarea id="instr" className="field text-sm" rows={3} placeholder="Lead with the measurement work; mention I'm local." value={instructions} onChange={(e) => setInstructions(e.target.value)} />
+              <textarea id="instr" className="field text-sm" rows={3} placeholder="e.g. Lead with the platform work; mention I'm local." value={instructions} onChange={(e) => setInstructions(e.target.value)} />
             </div>
             <div className="mt-4 flex flex-col gap-2">
               <Button onClick={() => generate.mutate("resume")} disabled={!posting || !base || generate.isPending}>

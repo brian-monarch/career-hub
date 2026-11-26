@@ -1,7 +1,7 @@
 -- Career Hub: fit-score boosts and application documents.
 
 -- Things that make a company worth a look outside his core domains
--- (e.g. well respected, Twin Cities, tech-oriented, sports/golf/travel).
+-- (e.g. well respected, local, tech-oriented).
 alter table public.search_profile
   add column if not exists boosts text;
 
