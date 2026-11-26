@@ -189,7 +189,7 @@ function MatchCard({ match: m }: { match: JobMatch }) {
               </Button>
             )}
             {m.fit_score == null && (m.description?.length ?? 0) < 40 && (
-              <span className="text-xs text-stone-500">From an email alert: paste its description on the right to score it.</span>
+              <span className="text-xs text-stone-500">No description came through for this one. Open the posting, then paste its description on the right to score it.</span>
             )}
             {m.fit_score == null && profile && (m.description?.length ?? 0) >= 40 && (
               <Button variant="secondary" className="px-3 py-1.5 text-xs" disabled={rescore.isPending} onClick={() => rescore.mutate({ profile: profileForApi(profile), match: m })}>
