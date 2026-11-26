@@ -22,7 +22,8 @@ Rules:
 - Comp: compare total compensation to his floors (base plus typical bonus at that level if only base is posted). If no pay is posted, say so; do not guess a number.
 - Location: respect his locations and remote preference. Hybrid in a listed metro is fine; on-site elsewhere is not.
 - Never invent facts about the company or role that are not in the posting.
-- Extract the posting fields exactly as written. Use null where something is not stated.`;
+- Extract the posting fields exactly as written. Use null where something is not stated.
+- Explain the score in score_drivers so he can see exactly which of his preferences moved it, and tune them. Name the preference you compared against (for example "your good-role comp floor" or "your Domains list"). Only suggest preference_tips when his settings and his likely intent seem to disagree.`;
 
 function money(n: number | null | undefined) {
   return n ? `$${Math.round(n / 1000)}k` : "not set";
