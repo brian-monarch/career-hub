@@ -118,4 +118,5 @@ export type SearchProfileRow = {
   comp_floor_good: number | null;
   must_haves: string | null;
   deal_breakers: string | null;
+  boosts: string | null;
 };

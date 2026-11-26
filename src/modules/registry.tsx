@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { CoachPage } from "@/modules/coach/CoachPage";
 import { ProgressPage } from "@/modules/coach/ProgressPage";
 import { StoriesPage } from "@/modules/stories/StoriesPage";
-import { ComingSoon } from "@/platform/ui/ComingSoon";
+import { ApplyPage } from "@/modules/apply/ApplyPage";
 import { DiscoverPage } from "@/modules/search/DiscoverPage";
 import { PipelinePage } from "@/modules/search/PipelinePage";
 import { WatchlistPage } from "@/modules/search/WatchlistPage";
@@ -28,13 +28,7 @@ export const modules: HubModule[] = [
   { path: "/pipeline", label: "Pipeline", group: "Search", status: "live", element: <PipelinePage /> },
   { path: "/watchlist", label: "Watchlist", group: "Search", status: "live", element: <WatchlistPage /> },
   { path: "/preferences", label: "Preferences", group: "Search", status: "live", element: <PreferencesPage /> },
-  {
-    path: "/applications",
-    label: "Tailor resume",
-    group: "Apply",
-    status: "soon",
-    element: <ComingSoon eyebrow="Apply" title="Tailor resume and cover letter" note="Pick a role in your pipeline and get a resume and cover letter tuned to it." />,
-  },
+  { path: "/apply", label: "Tailor resume", group: "Apply", status: "live", element: <ApplyPage /> },
   { path: "/coach", label: "Mock interview", group: "Prepare", status: "live", element: <CoachPage /> },
   { path: "/stories", label: "Story bank", group: "Prepare", status: "live", element: <StoriesPage /> },
   { path: "/progress", label: "Progress", group: "Prepare", status: "live", element: <ProgressPage /> },

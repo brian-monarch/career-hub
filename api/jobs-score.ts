@@ -16,6 +16,7 @@ Score fit 1-10 with these anchors:
 - 1-4: wrong level, wrong function, or a deal breaker.
 
 Rules:
+- His domains are preferences, not requirements. A role outside them can still score 7+ when the company matches his boosts (for example well respected, local, tech-oriented, or in an industry he cares about) and he is qualified for the role.
 - Judge against his profile, not against an ideal candidate. A posting asking for things he lacks is a gap to frame, not a reason for a low score, unless it is core to the role.
 - A low score is about the role's fit, never about his worth. Phrase gaps as what to address or how to position, in plain language.
 - Comp: compare total compensation to his floors (base plus typical bonus at that level if only base is posted). If no pay is posted, say so; do not guess a number.
@@ -37,6 +38,7 @@ function buildPrompt({ profile: p, posting }: ScoreRequest): string {
     `Comp: will take ${money(p.comp_floor_ideal)} total for an ideal role; needs ${money(p.comp_floor_good)} total for a good-but-not-ideal role`,
     `Must haves: ${p.must_haves ?? "none listed"}`,
     `Deal breakers: ${p.deal_breakers ?? "none listed"}`,
+    `Boosts (raise interest even outside his domains): ${p.boosts ?? "none listed"}`,
   ].join("\n");
   const header = [
     posting.company && `Company: ${posting.company}`,

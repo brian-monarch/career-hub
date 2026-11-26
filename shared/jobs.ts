@@ -13,6 +13,7 @@ export const SearchProfileSchema = z.object({
   comp_floor_good: z.number().nullish(),
   must_haves: z.string().nullish(),
   deal_breakers: z.string().nullish(),
+  boosts: z.string().nullish(),
 });
 export type SearchProfile = z.infer<typeof SearchProfileSchema>;
 

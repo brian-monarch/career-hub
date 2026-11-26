@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from "react";
+import { Link } from "react-router-dom";
 import type { Fit } from "@shared/jobs";
 import { Button } from "@/platform/ui/Button";
 import { Label, PageHeader } from "@/platform/ui/primitives";
@@ -160,11 +161,14 @@ function PostingDrawer({ posting: p, onClose }: { posting: Posting; onClose: () 
           <textarea id="notes" className="field text-sm" rows={5} value={notes} onChange={(e) => setNotes(e.target.value)} onBlur={() => notes !== (p.notes ?? "") && update.mutate({ id: p.id, notes })} />
         </div>
 
-        {p.url && (
-          <a href={p.url} target="_blank" rel="noreferrer" className="mt-4 inline-block text-sm text-brass-300 hover:underline">
-            Open posting ↗
-          </a>
-        )}
+        <div className="mt-4 flex flex-wrap items-center gap-4">
+          <Link to={`/apply?posting=${p.id}`} className="text-sm text-brass-300 hover:underline">Tailor resume / cover letter →</Link>
+          {p.url && (
+            <a href={p.url} target="_blank" rel="noreferrer" className="text-sm text-stone-400 hover:text-stone-200">
+              Open posting ↗
+            </a>
+          )}
+        </div>
       </aside>
     </div>
   );

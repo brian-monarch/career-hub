@@ -29,6 +29,7 @@ export const EMPTY_PROFILE: SearchProfileRow = {
   comp_floor_good: null,
   must_haves: "",
   deal_breakers: "",
+  boosts: "",
 };
 
 export function useProfile() {

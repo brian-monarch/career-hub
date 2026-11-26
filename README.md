@@ -10,6 +10,7 @@ A private web app for running a Director of Product search end to end: a job fin
 src/
   platform/        shared by every module: auth, Supabase client and queries, design system
   modules/
+    apply/         tailored resumes and cover letters per role
     search/        discover (scan + paste + fit score), pipeline Kanban, watchlist, preferences
     coach/         mock interview, rubric feedback, progress
     stories/       hero-story bank in STAR form
@@ -19,6 +20,7 @@ server/            server-only helpers: session check, job-board adapters (Green
 api/coach.ts       scores an interview answer with Claude
 api/jobs-scan.ts   pulls product-leadership roles from watchlist companies' public job boards
 api/jobs-score.ts  extracts a posting's details and scores fit 1-10 against your search preferences
+api/tailor.ts      tailors the base resume or writes a cover letter for a pipeline role (facts from the base resume only)
 supabase/migrations/   SQL schema (all v1 tables, RLS on every table)
 ```
 

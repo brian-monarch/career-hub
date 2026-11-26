@@ -7,7 +7,7 @@ import { EMPTY_PROFILE, useProfile, useSaveProfile } from "./data";
 const LIST_FIELDS: { key: "target_titles" | "target_levels" | "domains" | "locations"; label: string; placeholder: string }[] = [
   { key: "target_titles", label: "Target titles", placeholder: "Director of Product, Head of Product, Senior Director Product Management" },
   { key: "target_levels", label: "Levels", placeholder: "Director, Senior Director" },
-  { key: "domains", label: "Domains", placeholder: "Retail media, measurement, data platforms, retail tech" },
+  { key: "domains", label: "Preferred domains", placeholder: "Retail media, measurement, data platforms, retail tech" },
   { key: "locations", label: "Locations", placeholder: "Minneapolis-St. Paul, Remote (US)" },
 ];
 
@@ -38,6 +38,7 @@ export function PreferencesPage() {
       comp_floor_good: p.comp_floor_good?.toString() ?? "",
       must_haves: p.must_haves ?? "",
       deal_breakers: p.deal_breakers ?? "",
+      boosts: p.boosts ?? "",
     });
     setRemoteOk(p.remote_ok);
   }, [data]);
@@ -61,6 +62,7 @@ export function PreferencesPage() {
       comp_floor_good: toNum(form.comp_floor_good),
       must_haves: form.must_haves || null,
       deal_breakers: form.deal_breakers || null,
+      boosts: form.boosts || null,
     };
     await save.mutateAsync(row);
     setSaved(true);
@@ -122,6 +124,10 @@ export function PreferencesPage() {
               <Label htmlFor="deal">Deal breakers</Label>
               <textarea id="deal" className="field text-sm" rows={3} placeholder="Relocation; on-site 5 days outside the Twin Cities; IC-only roles" value={form.deal_breakers ?? ""} onChange={(e) => set("deal_breakers", e.target.value)} />
             </div>
+          </div>
+          <div>
+            <Label htmlFor="boosts">Boosts: what makes a company worth a look outside your domains</Label>
+            <textarea id="boosts" className="field text-sm" rows={2} placeholder="Well respected and high performing; Twin Cities based; tech-oriented; sports, golf or travel" value={form.boosts ?? ""} onChange={(e) => set("boosts", e.target.value)} />
           </div>
           {save.error && <p className="text-sm text-terracotta-300">{(save.error as Error).message}</p>}
           <div className="flex items-center gap-3">
