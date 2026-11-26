@@ -1,0 +1,100 @@
+@import "tailwindcss";
+
+/* Career Hub design tokens. Navy is the canvas, stone is the text;
+   sage, terracotta and brass each carry one meaning. */
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  --color-navy-950: #0e1420;
+  --color-navy-900: #151c2b;
+  --color-navy-800: #1d2638;
+  --color-navy-700: #26314a;
+
+  --color-stone-100: #f1efea;
+  --color-stone-200: #e4e1da;
+  --color-stone-400: #a8a39a;
+  --color-stone-500: #827d74;
+  --color-stone-700: #3a3f4a;
+
+  --color-sage-300: #a9bea6;
+  --color-sage-400: #8fa88c;
+  --color-sage-600: #5f7a5c;
+
+  --color-terracotta-300: #dc9a80;
+  --color-terracotta-400: #c97b5d;
+  --color-terracotta-600: #9a5640;
+
+  --color-brass-300: #c8a96a;
+  --color-steel-300: #9aa5b4;
+
+  --radius-card: 8px;
+  --shadow-deep: 0 8px 24px rgba(0, 0, 0, 0.45);
+  --shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+@layer base {
+  html,
+  body {
+    background: var(--color-navy-950);
+    color: var(--color-stone-200);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection {
+    background: color-mix(in srgb, var(--color-brass-300) 35%, transparent);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-brass-300);
+    outline-offset: 2px;
+  }
+  input,
+  textarea,
+  select {
+    color-scheme: dark;
+  }
+}
+
+@utility card {
+  background: var(--color-navy-900);
+  border: 1px solid var(--color-stone-700);
+  border-radius: var(--radius-card);
+}
+
+@utility card-raised {
+  background: var(--color-navy-900);
+  border: 1px solid var(--color-stone-700);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-deep);
+}
+
+@utility field {
+  width: 100%;
+  background: var(--color-navy-950);
+  border: 1px solid var(--color-stone-700);
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  color: var(--color-stone-200);
+  transition: border-color 150ms;
+  &:focus {
+    outline: none;
+    border-color: var(--color-brass-300);
+  }
+  &::placeholder {
+    color: var(--color-stone-500);
+  }
+}
+
+@utility eyebrow {
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-stone-400);
+  font-weight: 500;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(2px); }
+  to { opacity: 1; transform: none; }
+}
+.animate-fade { animation: fade-in 150ms ease-out; }
