@@ -84,7 +84,7 @@ export function PreferencesPage() {
               id="headline"
               className="field text-sm"
               rows={3}
-              placeholder="Principal PM with 18 years in retail data, measurement and retail media; former Director leading PM teams..."
+              placeholder="e.g. Product leader with 15 years in data platforms; former Director leading PM teams..."
               value={form.headline ?? ""}
               onChange={(e) => set("headline", e.target.value)}
             />

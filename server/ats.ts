@@ -15,8 +15,17 @@ function htmlToText(html: string | null | undefined): string | null {
     .trim();
 }
 
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
 async function getJson<T>(url: string, init?: RequestInit): Promise<T> {
-  const res = await fetch(url, { ...init, headers: { ...UA, ...(init?.headers ?? {}) }, signal: AbortSignal.timeout(15000) });
+  const go = () => fetch(url, { ...init, headers: { ...UA, ...(init?.headers ?? {}) }, signal: AbortSignal.timeout(15000) });
+  let res = await go();
+  if (res.status === 429) {
+    // Rate limited: honour Retry-After once (capped), then give up politely.
+    const wait = Math.min(Number(res.headers.get("retry-after")) || 3, 8) * 1000;
+    await sleep(wait);
+    res = await go();
+  }
   if (!res.ok) throw new Error(`${new URL(url).host} returned ${res.status}`);
   return (await res.json()) as T;
 }
@@ -107,25 +116,26 @@ async function workday(cfg: AtsConfig, kw?: string[]): Promise<{ scanned: number
   type WDList = { total: number; jobPostings: { title: string; externalPath: string; locationsText?: string; postedOn?: string; bulletFields?: string[] }[] };
   const found: WDList["jobPostings"] = [];
   let scanned = 0;
-  for (const searchText of ["product director", "head of product", "group product manager"]) {
-    for (let offset = 0; offset < 60; offset += 20) {
-      const page = await getJson<WDList>(`${base}/jobs`, {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ appliedFacets: {}, limit: 20, offset, searchText }),
-      });
-      scanned += page.jobPostings.length;
-      for (const p of page.jobPostings) if (!found.some((f) => f.externalPath === p.externalPath)) found.push(p);
-      if (offset + 20 >= page.total) break;
-    }
+  // Workday rate-limits hard, so keep this to a few sequential requests: one search, up to 3 pages.
+  for (let offset = 0; offset < 60; offset += 20) {
+    if (offset) await sleep(500);
+    const page = await getJson<WDList>(`${base}/jobs`, {
+      method: "POST",
+      headers: { "content-type": "application/json", "accept-language": "en-US" },
+      body: JSON.stringify({ appliedFacets: {}, limit: 20, offset, searchText: "product" }),
+    });
+    scanned += page.jobPostings.length;
+    for (const p of page.jobPostings) if (!found.some((f) => f.externalPath === p.externalPath)) found.push(p);
+    if (offset + 20 >= page.total) break;
   }
   const matches = found.filter((p) => isProductLeadershipTitle(p.title, kw)).slice(0, MAX_DETAILS);
   type WDDetail = { jobPostingInfo: { id?: string; jobReqId?: string; jobDescription?: string; location?: string; externalUrl?: string; startDate?: string } };
-  const jobs = await Promise.all(
-    matches.map(async (p) => {
-      const d = await getJson<WDDetail>(`${base}${p.externalPath}`).catch(() => null);
-      const info = d?.jobPostingInfo;
-      return {
+  const jobs: ScannedJob[] = [];
+  for (const p of matches) {
+    await sleep(300);
+    const d = await getJson<WDDetail>(`${base}${p.externalPath}`).catch(() => null);
+    const info = d?.jobPostingInfo;
+    jobs.push({
         external_id: info?.jobReqId ?? p.bulletFields?.[0] ?? p.externalPath,
         title: p.title,
         url: info?.externalUrl ?? `https://${cfg.host}/${cfg.site}${p.externalPath}`,
@@ -134,9 +144,8 @@ async function workday(cfg: AtsConfig, kw?: string[]): Promise<{ scanned: number
         description: htmlToText(info?.jobDescription),
         comp_min: null,
         comp_max: null,
-      };
-    }),
-  );
+      });
+  }
   return { scanned, jobs };
 }
 
