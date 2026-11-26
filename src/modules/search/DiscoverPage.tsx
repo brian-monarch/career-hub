@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { Link } from "react-router-dom";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/platform/data/supabase";
 import type { Fit } from "@shared/jobs";
 import { Button } from "@/platform/ui/Button";
 import { Card, Empty, Label, PageHeader } from "@/platform/ui/primitives";
@@ -117,7 +118,10 @@ export function DiscoverPage() {
             </div>
           )}
         </div>
-        <PasteCard disabled={!ready} />
+        <div className="space-y-6">
+          <PasteCard disabled={!ready} />
+          <EmailIntake />
+        </div>
       </div>
     </>
   );
@@ -184,7 +188,10 @@ function MatchCard({ match: m }: { match: JobMatch }) {
                 Restore{m.dismiss_reason && ` (dismissed: ${m.dismiss_reason})`}
               </Button>
             )}
-            {m.fit_score == null && profile && (
+            {m.fit_score == null && (m.description?.length ?? 0) < 40 && (
+              <span className="text-xs text-stone-500">From an email alert: paste its description on the right to score it.</span>
+            )}
+            {m.fit_score == null && profile && (m.description?.length ?? 0) >= 40 && (
               <Button variant="secondary" className="px-3 py-1.5 text-xs" disabled={rescore.isPending} onClick={() => rescore.mutate({ profile: profileForApi(profile), match: m })}>
                 {rescore.isPending ? "Scoring…" : "Score"}
               </Button>
@@ -247,6 +254,34 @@ function PasteCard({ disabled }: { disabled: boolean }) {
         </Button>
         {status === "error" && <p className="text-xs text-terracotta-300">{error}</p>}
       </form>
+    </Card>
+  );
+}
+
+function EmailIntake() {
+  const { data = [] } = useQuery({
+    queryKey: ["inbound_emails"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("inbound_emails").select("*").order("received_at", { ascending: false }).limit(5);
+      if (error) return [];
+      return data as { id: string; received_at: string; subject: string | null; parsed_count: number; error: string | null }[];
+    },
+  });
+  if (!data.length) return null;
+  return (
+    <Card>
+      <p className="eyebrow">Email alerts received</p>
+      <ul className="mt-3 space-y-3 text-xs">
+        {data.map((e) => (
+          <li key={e.id}>
+            <p className="text-stone-300">{e.subject ?? "(no subject)"}</p>
+            <p className="text-stone-500">
+              {new Date(e.received_at).toLocaleString()} · {e.parsed_count} new
+            </p>
+            {e.error && <p className="mt-1 whitespace-pre-line break-words text-stone-400">{e.error.slice(0, 400)}</p>}
+          </li>
+        ))}
+      </ul>
     </Card>
   );
 }

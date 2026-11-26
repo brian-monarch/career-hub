@@ -21,3 +21,16 @@ create table public.documents (
 select public.ch_enable_owner_rls('public.documents');
 create index on public.documents (user_id, kind, created_at desc);
 create index on public.documents (posting_id);
+
+-- Forwarded job alert emails (e.g. LinkedIn alerts), logged for troubleshooting.
+create table public.inbound_emails (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users on delete cascade,
+  received_at timestamptz not null default now(),
+  sender text,
+  subject text,
+  parsed_count integer not null default 0,
+  error text
+);
+
+select public.ch_enable_owner_rls('public.inbound_emails');

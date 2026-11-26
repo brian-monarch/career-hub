@@ -21,6 +21,7 @@ api/coach.ts       scores an interview answer with Claude
 api/jobs-scan.ts   pulls product-leadership roles from watchlist companies' public job boards
 api/jobs-score.ts  extracts a posting's details and scores fit 1-10 against your search preferences
 api/tailor.ts      tailors the base resume or writes a cover letter for a pipeline role (facts from the base resume only)
+api/inbound-email.ts  receives forwarded job alert emails (via workers/email-ingest.js on Cloudflare) and adds the jobs to Discover
 supabase/migrations/   SQL schema (all v1 tables, RLS on every table)
 ```
 
