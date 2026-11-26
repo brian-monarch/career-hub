@@ -3,6 +3,7 @@ import { CoachPage } from "@/modules/coach/CoachPage";
 import { ProgressPage } from "@/modules/coach/ProgressPage";
 import { StoriesPage } from "@/modules/stories/StoriesPage";
 import { ApplyPage } from "@/modules/apply/ApplyPage";
+import { HomePage } from "@/modules/search/HomePage";
 import { DiscoverPage } from "@/modules/search/DiscoverPage";
 import { PipelinePage } from "@/modules/search/PipelinePage";
 import { WatchlistPage } from "@/modules/search/WatchlistPage";
@@ -21,9 +22,10 @@ export type HubModule = {
   element: ReactNode;
 };
 
-export const HOME_PATH = "/discover";
+export const HOME_PATH = "/home";
 
 export const modules: HubModule[] = [
+  { path: "/home", label: "This week", group: "Search", status: "live", element: <HomePage /> },
   { path: "/discover", label: "Discover", group: "Search", status: "live", element: <DiscoverPage /> },
   { path: "/pipeline", label: "Pipeline", group: "Search", status: "live", element: <PipelinePage /> },
   { path: "/watchlist", label: "Watchlist", group: "Search", status: "live", element: <WatchlistPage /> },
