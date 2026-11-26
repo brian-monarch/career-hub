@@ -52,9 +52,9 @@ export function DiscoverPage() {
   }
 
   const inbox = matches.filter((m) => m.status === "new");
-  const strong = inbox.filter((m) => (m.fit_score ?? 0) >= 7);
+  const strong = inbox.filter((m) => (m.fit_score ?? 0) >= 6);
   const unscored = inbox.filter((m) => m.fit_score == null);
-  const lower = inbox.filter((m) => m.fit_score != null && m.fit_score < 7);
+  const lower = inbox.filter((m) => m.fit_score != null && m.fit_score < 6);
   const dismissed = matches.filter((m) => m.status === "dismissed");
 
   if (loadingProfile) return null;
@@ -102,7 +102,7 @@ export function DiscoverPage() {
                   <button className="eyebrow cursor-pointer hover:text-stone-200" onClick={() => setShowLower((v) => !v)}>
                     {showLower ? "−" : "+"} {lower.length} lower-fit {lower.length === 1 ? "role" : "roles"}
                   </button>
-                  <p className="mt-1 text-xs text-stone-500">Scored under 7 against your preferences. That's about the role, not about you.</p>
+                  <p className="mt-1 text-xs text-stone-500">Scored under 6 against your preferences. That's about the role, not about you.</p>
                   {showLower && <div className="mt-3 space-y-3">{lower.map((m) => <MatchCard key={m.id} match={m} />)}</div>}
                 </div>
               )}

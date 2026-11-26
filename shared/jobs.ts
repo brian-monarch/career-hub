@@ -26,6 +26,11 @@ export const ScoreRequestSchema = z.object({
     location: z.string().max(300).optional(),
     description: z.string().min(40).max(60000),
   }),
+  dismissals: z
+    .array(z.object({ title: z.string(), company: z.string(), reason: z.string().nullable() }))
+    .max(30)
+    .optional()
+    .describe("Roles he recently dismissed and why, so scoring learns his taste."),
 });
 export type ScoreRequest = z.infer<typeof ScoreRequestSchema>;
 

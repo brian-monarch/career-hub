@@ -97,10 +97,21 @@ export function useMatches() {
   });
 }
 
+async function recentDismissals() {
+  const { data } = await supabase
+    .from("job_matches")
+    .select("title, company_name, dismiss_reason")
+    .eq("status", "dismissed")
+    .order("found_at", { ascending: false })
+    .limit(20);
+  return (data ?? []).map((d) => ({ title: d.title as string, company: d.company_name as string, reason: (d.dismiss_reason as string | null) ?? null }));
+}
+
 async function scoreMatch(profile: SearchProfile, m: Pick<JobMatch, "id" | "title" | "company_name" | "url" | "location" | "description">) {
   if (!m.description || m.description.length < 40) return null;
   const res = await callApi<ScoreResponse>("/api/jobs-score", {
     profile,
+    dismissals: await recentDismissals(),
     posting: { title: m.title, company: m.company_name, url: m.url ?? undefined, location: m.location ?? undefined, description: m.description.slice(0, 60000) },
   });
   const f = res.fit;
@@ -176,6 +187,7 @@ export async function scanWatchlist(
 export async function addPastedPosting(profile: SearchProfile, input: { url: string; text: string }): Promise<Fit> {
   const res = await callApi<ScoreResponse>("/api/jobs-score", {
     profile,
+    dismissals: await recentDismissals(),
     posting: { url: input.url || undefined, description: input.text },
   });
   const f = res.fit;

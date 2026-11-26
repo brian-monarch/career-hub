@@ -28,7 +28,7 @@ function money(n: number | null | undefined) {
   return n ? `$${Math.round(n / 1000)}k` : "not set";
 }
 
-function buildPrompt({ profile: p, posting }: ScoreRequest): string {
+function buildPrompt({ profile: p, posting, dismissals }: ScoreRequest): string {
   const profile = [
     p.headline ?? "",
     `Target titles: ${p.target_titles.join(", ") || "not set"}`,
@@ -48,7 +48,12 @@ function buildPrompt({ profile: p, posting }: ScoreRequest): string {
   ]
     .filter(Boolean)
     .join("\n");
-  return `<candidate_profile>\n${profile}\n</candidate_profile>\n\n<posting>\n${header}\n\n${posting.description}\n</posting>`;
+  const dismissed = dismissals?.length
+    ? `\n\n<recently_dismissed>\nRoles he passed on, with his reason. Score similar roles lower for the same reason.\n${dismissals
+        .map((d) => `- ${d.title} at ${d.company}: ${d.reason ?? "no reason"}`)
+        .join("\n")}\n</recently_dismissed>`
+    : "";
+  return `<candidate_profile>\n${profile}\n</candidate_profile>${dismissed}\n\n<posting>\n${header}\n\n${posting.description}\n</posting>`;
 }
 
 export async function POST(request: Request): Promise<Response> {
